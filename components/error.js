@@ -15,9 +15,9 @@ class LoadError extends Component {
 	render() {
 		return (
 				<View style={styles.abs}>
-					<TouchableOpacity onPress={this.props.reload.bind(this)}>
+					<TouchableOpacity onPress={this.props.reload.bind(this)} style={styles.bg}>
 						<View style={{justifyContent:'center',alignItems:'center'}}>
-							<Text style={{marginBottom: 10}}>加载失败</Text>
+							<Text style={{marginBottom: 10}} style={{color: '#F2F2F2'}}>加载失败</Text>
 							<Image source={require('../public/reload.png')} />
 						</View>
 					</TouchableOpacity>
@@ -35,6 +35,11 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		paddingVertical: 10,
 	},
+	bg: {
+		backgroundColor: 'rgba(0,0,0,.9)',
+		padding: 15,
+		borderRadius: 5,
+	}
 });
 
 export default LoadError;

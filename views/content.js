@@ -22,6 +22,7 @@ class Content extends Component {
 			isError: false,
 			isLoaded: false,
 		 };
+		 this.flag = false;
 	}
 
 	load() {
@@ -29,6 +30,7 @@ class Content extends Component {
 			isError: false,
 			isLoaded: false,
 		});
+		this.flag = true;
 		fetch(GET_COMIC(this.props.id))
 			.then((res) => {
 				if (res.status >= 200 && res.status < 300) {
@@ -37,14 +39,18 @@ class Content extends Component {
 				return Promise.reject(new Error(res.status));
 			})
 			.then((json) => {
-				this.setState({
-					description: json.comic.description,
-					epCount: json.ep_count,
-					isLoaded: true,
-				});
+				if (this.flag) {
+					this.setState({
+						description: json.comic.description,
+						epCount: json.ep_count,
+						isLoaded: true,
+					});
+				}
 			})
 			.catch((err) => {
-				this.setState({ isError: true, isLoaded: true })
+				if (this.flag) {
+					this.setState({ isError: true, isLoaded: true });
+				}
 			});
 
 	}
@@ -53,12 +59,9 @@ class Content extends Component {
 		this.load();
 	}
 
-	// back() {
-	// 	const nav = this.props.nav;
-	// 	if (nav) {
-	// 		nav.pop();
-	// 	}
-	// }
+	componentWillUnmount() {
+		this.flag = false;
+	}
 
 	read(i) {
 		const nav = this.props.nav;
@@ -71,32 +74,26 @@ class Content extends Component {
 	}
 
 	render() {
-		const { cover, author, updated, finished, name, nav, id } = this.props;
+		const { cover, author, updated, finished, name, nav, id, isIOS } = this.props;
 		const props = {
 			cover,
 			author,
 			name,
 			nav,
 			id,
+			isIOS,
 		};
 		const eps = [];
 		let epCount = this.state.epCount;
 		if (epCount) {
 			for (let i = 1; i < epCount+1; i++) {
-				eps.push(<TouchableOpacity key={i} style={styles.ep} onPress={this.read.bind(this, i)}><Text>第{i}話</Text></TouchableOpacity>);
+				eps.push(<TouchableOpacity key={i} style={styles.ep} onPress={this.read.bind(this, i)} isIOS={isIOS}><Text>第{i}話</Text></TouchableOpacity>);
 			}
 		}
 
 		return(
 			<View style={{backgroundColor: '#F2F2F2', flex: 1}}>
-				{/*<View style={styles.header}>
-					<TouchableOpacity onPress={this.back.bind(this)}>
-						<Text style={styles.text}>&lt;返回</Text>
-					</TouchableOpacity>
-					<Text style={{fontSize: 20, color: '#FFF'}}>咔咪漫畫</Text>
-					<Text style={styles.text}>搜索</Text>
-				</View> */}
-				<Header nav={this.props.nav}/>
+				<Header nav={this.props.nav} isIOS={this.props.isIOS}/>
 				<View style={{backgroundColor: '#FFF'}}>
 					<ContentInfo {...props} />
 				</View>

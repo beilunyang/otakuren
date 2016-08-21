@@ -10,6 +10,7 @@ import {
 class ListItem extends Component {
 	constructor(props) {
 		super(props);
+		this.state = { cover: require('../public/defaultCover.jpg') }
 	}
 
 	handlePress(params, nav) {
@@ -19,8 +20,18 @@ class ListItem extends Component {
 		}
 	}
 
+	componentDidMount() {
+		// 优化listView卡顿问题,当图片过大时，渲染需要消耗更多时间。而图片尺寸往往与图片大小成正比
+		Image.getSize(this.props.cover, (width, height) => {
+			if (width > 1000 || height > 1500) {
+				return;
+			}
+			this.setState({ cover: { uri: this.props.cover } });
+		});
+	} 
+
 	render() {
-		const { author, updated, finished, cover, navToContent, nav, name, id } = this.props;
+		const { author, updated, finished, cover, navToContent, nav, name, id, isIOS } = this.props;
 		const params = {
 			author,
 			updated,
@@ -28,12 +39,13 @@ class ListItem extends Component {
 			cover,
 			name,
 			id,
+			isIOS,
 		};
 
 		return (
 			<TouchableOpacity onPress={this.handlePress.bind(this, params, nav)} style={{overflow: 'hidden'}}>
 				<View style={styles.container}>
-					<Image source={{uri: cover}} style={styles.cover}/>
+					<Image source={this.state.cover} style={styles.cover} />
 					<View style={styles.info}>
 						<Text style={styles.title}>{name}</Text>
 						<Text>{author?'作者:  ':''}{author}</Text>

@@ -18,7 +18,7 @@ class ContentInfo extends Component {
 		if (nav) {
 			nav.push({
 				component: Reader,
-				params: { ep: 1, id: this.props.id },
+				params: { ep: 1, id: this.props.id, isIOS: this.props.isIOS },
 			});
 		}
 	}

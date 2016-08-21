@@ -2,14 +2,16 @@ import React, { Component } from 'react';
 import {
 	Navigator,
 	BackAndroid,
-	Platform,
 	ToastAndroid,
+	Platform,
 } from 'react-native';
+import codePush from "react-native-code-push";
 import Home from './home';
 
 class App extends Component {
-	constructor() {
-		super();
+	constructor(props) {
+		super(props);
+		this.isIOS = Platform.OS === 'ios'?true:false;
 	}
 
 	// 初始化时就通过箭头函数绑定this，方便日后removeEventListener.
@@ -30,13 +32,13 @@ class App extends Component {
   	}
 
 	componentDidMount() {
-		if (Platform.OS === 'android') {
+		if (!this.isIOS) {
 			BackAndroid.addEventListener('hardwareBackPress', this.onBackAndroid);
 		}
 	}
 
 	componentWillUnmount() {
-	   if (Platform.OS === 'android') {
+	   if (!this.isIOS) {
 	     BackAndroid.removeEventListener('hardwareBackPress', this.onBackAndroid);
 	   }
 	 }
@@ -45,7 +47,7 @@ class App extends Component {
 		const props = {
 			initialRoute: { 
 				component: Home,
-				params: {},
+				params: { isIOS: this.isIOS },
 			},
 			configureScene(route) {
 				return Navigator.SceneConfigs.VerticalUpSwipeJump;
@@ -62,4 +64,6 @@ class App extends Component {
 	}
 }
 
-export default App;
+export default codePush(App);
+
+

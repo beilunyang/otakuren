@@ -22,6 +22,7 @@ class Reader extends Component {
 			isTouch: false,
 			pics: ds,
 		};
+		this.flag = false;
 	}
 	back() {
 		const nav = this.props.nav;
@@ -48,6 +49,7 @@ class Reader extends Component {
 			isError: false,
 			isLoaded: false,
 		});
+		this.flag = true;
 		fetch(GET_COMIC_EP(this.props.id, this.props.ep))
 			.then((res) => {
 				if (res.status >= 200 && res.status < 300) {
@@ -56,17 +58,25 @@ class Reader extends Component {
 				return Promise.reject(new Error(res.status));
 			})
 			.then((json) => {
-				this.setState({
-					pics: this.state.pics.cloneWithRows(json),
-				});
+				if (this.flag) {
+					this.setState({
+						pics: this.state.pics.cloneWithRows(json),
+					});
+				}
 			})
 			.catch((err) => {
-				this.setState({ isError: true, isLoaded: true })
+				if (this.flag) {
+					this.setState({ isError: true, isLoaded: true });
+				}
 			});
 	}
 
 	componentDidMount() {
 		this.load();
+	}
+
+	componentWillUnmount() {
+		this.flag = false;
 	}
 
 	render() {
@@ -92,7 +102,7 @@ class Reader extends Component {
 		};
 		return(	
 			<View style={styles.container}>
-				{this.state.isTouch?<View style={styles.toolbar}>
+				{this.state.isTouch?<View style={[styles.toolbar,this.props.isIOS?{paddingTop:20}:{paddingTop:10}]}>
 						<TouchableOpacity onPress={this.back.bind(this)}>
 							<View><Text style={styles.text}>&lt;返回</Text></View>
 						</TouchableOpacity>
@@ -129,7 +139,7 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		paddingHorizontal: 20,
-		paddingVertical: 10,
+		paddingBottom: 10,
 	},
 	text: {
 		fontSize: 18,

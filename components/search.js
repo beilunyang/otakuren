@@ -9,8 +9,8 @@ import { SEARCH_COMICS } from '../utils/api';
 import ListComic from '../views/list';
 
 class Search extends Component {
-	constructor() {
-		super();
+	constructor(props) {
+		super(props);
 	}
 
 	handleSumbit(e) {
@@ -21,6 +21,7 @@ class Search extends Component {
 				params: {
 					searchValue: e.nativeEvent.text,
 					reqUrl: SEARCH_COMICS,
+					isIOS: this.props.isIOS,
 				} 
 			});
 		}
@@ -32,6 +33,10 @@ class Search extends Component {
 			underlineColorAndroid: 'transparent',
 			onSubmitEditing: this.handleSumbit.bind(this),
 			style: styles.searchInput,
+			autoCorrect: false,
+			autoCapitalize: 'none',
+			keyboardType: 'default',
+			selectionColor: '#F84F95',
 		};
 		return (
 			<View style={styles.search}>
@@ -58,7 +63,8 @@ const styles = StyleSheet.create({
   searchInput: {
     flex: 1,
     fontSize: 18,
-    paddingVertical: 5,
+    //paddingVertical: 5,
+    height: 50,
     textAlign: 'center',
     color: '#233',
   },

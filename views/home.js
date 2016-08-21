@@ -57,6 +57,7 @@ class Home extends Component {
 					name,
 					reqUrl: GET_COMIC_LIST,
 					pages: Math.ceil(all_comics/20),
+					isIOS: this.props.isIOS,
 				},
 			});
 		}
@@ -64,15 +65,21 @@ class Home extends Component {
 
 	render() {
 		const categorys = [];
-		this.state.categorys.forEach((v, i) => {
+		const cats = this.state.categorys;
+		for (let i=0, len=cats.length; i<len; i++) {
+			const v = cats[i];
+			// id===31為遊戲推薦
+			if (v.id === 31) {
+				continue;
+			}
 			categorys.push(<Category name={v.name} cover={v.cover_image} key={i} handlePress={this.handlePress.bind(this, v.id, v.name, v.all_comics)} />);
-		});
+		}
 
 		return (
 			<View style={{flex: 1, backgroundColor: '#FFF'}}>
-				<Text style={styles.header}>咔咪漫畫</Text>
+				<Text style={[styles.header, this.props.isIOS?{paddingTop:20}:null]}>咔咪漫畫</Text>
 				<ScrollView style={{flex: 1}} >
-					<Search nav={this.props.nav}/>
+					<Search nav={this.props.nav} isIOS={this.props.isIOS}/>
 					<View style={styles.scrollView}>
 						{ categorys }
 					</View>
@@ -99,9 +106,8 @@ const styles = StyleSheet.create({
 	  	flexDirection: 'row',
 	    flexWrap: 'wrap',
 	    alignItems: 'center',
-	    padding: 10,
-	    justifyContent: 'space-around',
-	    paddingTop: 20,
+	    padding: 18,
+	    justifyContent: 'space-between',
 	},
 	abs: {
 		position: 'absolute',
