@@ -14,6 +14,7 @@ import ListItem from '../components/listItem';
 import LoadError from '../components/error';
 import Header from '../components/header';
 import Content from './content';
+import { ajax } from '../utils/util';
 
 class ListComic extends Component {
 	constructor(props) {
@@ -23,8 +24,9 @@ class ListComic extends Component {
 			comics: ds,
 			isError: false,
 			isLoaded: true,
+			end: false, // 所有数据加载完成
 		};
-		this.flag = false; // 当flag为true时，才可以调用toastAndroid和setState...
+		this.flag = false; // 当flag为true时，才可以调用setState...
 		this.page = 0; // 當前頁數
 		this.originData = []; 
 		this.reqLock = false; // 請求鎖
@@ -50,36 +52,57 @@ class ListComic extends Component {
 		}
 	}
 
-	showMore() {
-		if (this.page < this.props.pages || this.props.pages === undefined) {
-			this.reqLock = true; // 獲得請求鎖，優化重複加載
-			this.flag = true;
-			this.setState({
-				isError: false,
-				isLoaded: this.page?true:false,
-			});
-			//fetch(GET_COMIC_LIST(this.props.id, this.page+1))
-			fetch(this.reqUrl(this.page+1))
-				.then((res) => {
-					if (res.status >= 200 && res.status < 300) {
-						return res.json();
+	load(i=0) {
+		if (i > 10) {
+			if (this.flag) {
+				return this.setState({ isLoaded: true, isError: true });
+			}
+		} 
+		i++;
+		ajax({
+			url: this.reqUrl(this.page+1),
+			success: (json) => {
+				this.reqLock = false; // 釋放鎖
+				if (this.flag) {
+					// search页判断是否是最后一页
+					// search接口没有提供搜索结果总数，所以只能悲剧的判断返回结果是不是空，来判断是不是最后一页╮(╯▽╰)╭
+					if (json.length === 0) {
+						return this.setState({ end: true, isLoaded: true });
 					}
-					return Promise.reject(new Error(res.status));
-				})
-				.then((json) => {
-					this.reqLock = false; // 釋放鎖
 					this.originData = this.originData.concat(json);
-					if (this.flag) {
+					this.page++;
+					// list页判断是否是最后一页
+					if (this.props.pages && this.page >= this.props.pages) {
+						this.setState({comics: this.state.comics.cloneWithRows(this.originData), isLoaded: true, end: true});
+					} else {
 						this.setState({comics: this.state.comics.cloneWithRows(this.originData), isLoaded: true});
 					}
-					this.page++;
-				})
-				.catch((err) => {
-					this.reqLock = false;
-					if (this.flag) {
-						this.setState({isError: true, isLoaded: true});
-					}
-				});	
+				}
+			},
+			error: (err) => {
+				this.reqLock = false;
+				if (err.message === '0') {
+					return this.load(i);
+				}
+				if (this.flag) {
+					this.setState({isError: true, isLoaded: true});
+				}
+			},
+			timeout: 2000,
+		});
+	}
+
+	showMore() {
+		if (!this.state.end) {
+			this.reqLock = true; // 獲得請求鎖，優化重複加載
+			this.flag = true;
+			if (this.flag) {
+				this.setState({
+					isError: false,
+					isLoaded: this.page?true:false,
+				});
+			}
+			this.load();
 		}
 	}
 
@@ -94,24 +117,28 @@ class ListComic extends Component {
 					name: v.name,
 					finished: Number(v.finished),
 					cover: v.cover_image,
+					id: v.id,
 					navToContent: self.navToContent,
 					nav: self.props.nav,
-					id: self.props.id,
 					isIOS: self.props.isIOS,
 				};
 				return <ListItem {...p}  />
 			},
-			onEndReached() {
-				if (!self.reqLock) {
-					self.showMore();
+			onEndReached: !this.state.end?() => {
+				if (!this.reqLock) {
+					this.showMore();
 				}
-			},
+			}:undefined,
 			initialListSize: 10,
 			removeClippedSubviews: true,
 			onEndReachedThreshold: 20,
+			
 			renderFooter() {
-				if (self.originData.length !== 0 && self.page+1 < self.props.pages) {
+				if (self.originData.length !== 0 && !self.state.end) {
 					return <Text style={{textAlign: 'center', paddingVertical: 15}}>正在加載</Text> ;
+				}
+				if (self.state.end) {
+					return <Text style={{textAlign: 'center', paddingVertical: 15}}>加载完了:共{self.originData.length}条记录</Text>;
 				}
 			}
 		};

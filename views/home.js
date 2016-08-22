@@ -12,7 +12,6 @@ import LoadError from '../components/error';
 import { Bubbles } from 'react-native-loader';
 import { GET_COMIC_CATEGORYS, GET_COMIC_LIST } from '../utils/api'; 
 
-
 class Home extends Component {
 	constructor(props) {
 		super(props);
@@ -23,11 +22,15 @@ class Home extends Component {
 		};
 	}
 
-	load() {
+	load(i=0) {
+		if (i > 10) {
+			return this.setState({ isError: true, isLoaded: true });
+		}
 		this.setState({
 			isError: false,
 			isLoaded: false,
 		});
+		i++;
 		fetch(GET_COMIC_CATEGORYS())
 			.then((res) => {
 				if (res.status >= 200 && res.status < 300) {
@@ -41,6 +44,7 @@ class Home extends Component {
 			.catch((err) => {
 				this.setState({ isError: true, isLoaded: true });
 			});
+		
 	}
 
 	componentDidMount() {

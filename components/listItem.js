@@ -27,7 +27,7 @@ class ListItem extends Component {
 				return;
 			}
 			this.setState({ cover: { uri: this.props.cover } });
-		});
+		}, (err) => {return;});
 	} 
 
 	render() {

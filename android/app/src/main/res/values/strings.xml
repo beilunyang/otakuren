@@ -1,4 +1,4 @@
 <resources>
     <string moduleConfig="true" name="reactNativeCodePush_androidDeploymentKey"></string>
-    <string name="app_name">kamikami</string>
+    <string name="app_name">咔咪漫畫</string>
 </resources>

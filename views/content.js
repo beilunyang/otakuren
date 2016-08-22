@@ -12,6 +12,7 @@ import LoadError from '../components/error';
 import ContentInfo from '../components/contentInfo';
 import Header from '../components/header';
 import { GET_COMIC } from '../utils/api'; 
+import { ajax } from '../utils/util';
 
 class Content extends Component {
 	constructor(props) {
@@ -23,22 +24,22 @@ class Content extends Component {
 			isLoaded: false,
 		 };
 		 this.flag = false;
+		 this.timeout = true;
 	}
 
-	load() {
+	load(i=0) {
+		if (i>10) {
+			return this.setState({ isError: true, isLoaded: true });
+		}
 		this.setState({
 			isError: false,
 			isLoaded: false,
 		});
 		this.flag = true;
-		fetch(GET_COMIC(this.props.id))
-			.then((res) => {
-				if (res.status >= 200 && res.status < 300) {
-					return res.json();
-				}
-				return Promise.reject(new Error(res.status));
-			})
-			.then((json) => {
+		i++;
+		ajax({
+			url: GET_COMIC(this.props.id),
+			success: (json) => {
 				if (this.flag) {
 					this.setState({
 						description: json.comic.description,
@@ -46,13 +47,17 @@ class Content extends Component {
 						isLoaded: true,
 					});
 				}
-			})
-			.catch((err) => {
+			},
+			error: (err) => {
+				if (err.message === '0') {
+					return this.load(i);
+				}
 				if (this.flag) {
 					this.setState({ isError: true, isLoaded: true });
 				}
-			});
-
+			},
+			timeout: 2000,
+		});
 	}
 
 	componentDidMount() {

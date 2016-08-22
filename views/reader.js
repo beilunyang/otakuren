@@ -12,6 +12,7 @@ import {
 import { Bubbles } from 'react-native-loader';
 import LoadError from '../components/error';
 import { GET_COMIC_EP } from '../utils/api'; 
+import { ajax } from '../utils/util';
 
 class Reader extends Component {
 	constructor(props) {
@@ -44,31 +45,35 @@ class Reader extends Component {
 		}
 	}
 
-	load() {
+	load(i=0) {
+		if (i > 10) {
+			return this.setState({ isLoaded: true, isError: true });
+		} 
 		this.setState({
 			isError: false,
 			isLoaded: false,
 		});
 		this.flag = true;
-		fetch(GET_COMIC_EP(this.props.id, this.props.ep))
-			.then((res) => {
-				if (res.status >= 200 && res.status < 300) {
-					return res.json();
-				}
-				return Promise.reject(new Error(res.status));
-			})
-			.then((json) => {
+		i++;
+		ajax({
+			url: GET_COMIC_EP(this.props.id, this.props.ep),
+			success: (json) => {
 				if (this.flag) {
 					this.setState({
 						pics: this.state.pics.cloneWithRows(json),
 					});
 				}
-			})
-			.catch((err) => {
+			},
+			error: (err) => {
+				if (err.message === '0') {
+					return this.load(i);
+				}
 				if (this.flag) {
 					this.setState({ isError: true, isLoaded: true });
 				}
-			});
+			},
+			timeout: 2000,
+		});
 	}
 
 	componentDidMount() {

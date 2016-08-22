@@ -34,7 +34,7 @@ class Header extends Component {
 				<TouchableOpacity onPress={this.back.bind(this)}> 
 					<Text style={styles.back} >&lt;返回</Text>
 				</TouchableOpacity>
-				<Text style={styles.title}>{this.props.name || '咪咔漫畫'}</Text>
+				<Text style={styles.title}>{this.props.name || '咔咪漫畫'}</Text>
 				<TouchableOpacity onPress={this.search.bind(this)}> 
 					<Text style={styles.back} >搜索</Text>
 				</TouchableOpacity>
