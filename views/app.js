@@ -64,6 +64,20 @@ class App extends Component {
 	}
 }
 
-export default codePush(App);
+const updateOpt = { 
+	updateDialog: {
+	    appendReleaseDescription: true,
+	    descriptionPrefix: '更新内容：\n',
+	    title: '更新',
+	    mandatoryUpdateMessage: '',
+	    optionalUpdateMessage: '',
+	    mandatoryContinueButtonLabel: '更新',
+	    optionalIgnoreButtonLabel: '忽略',
+	    optionalInstallButtonLabel: '更新',
+	},
+	installMode: codePush.InstallMode.IMMEDIATE,
+};
+
+export default codePush(updateOpt)(App);
 
 

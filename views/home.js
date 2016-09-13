@@ -81,7 +81,7 @@ class Home extends Component {
 
 		return (
 			<View style={{flex: 1, backgroundColor: '#FFF'}}>
-				<Text style={[styles.header, this.props.isIOS?{paddingTop:20}:null]}>咔咪漫畫</Text>
+				<Text style={[styles.header, this.props.isIOS?{paddingTop:20}:null]}>御宅人</Text>
 				<ScrollView style={{flex: 1}} >
 					<Search nav={this.props.nav} isIOS={this.props.isIOS}/>
 					<View style={styles.scrollView}>
