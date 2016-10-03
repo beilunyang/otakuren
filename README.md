@@ -9,6 +9,5 @@
 ![screenshot3](https://github.com/beilunyang/otakuren/raw/master/screenshots/Screenshot3.png)
 ![screenshot4](https://github.com/beilunyang/otakuren/raw/master/screenshots/Screenshot4.png)
 ![screenshot5](https://github.com/beilunyang/otakuren/raw/master/screenshots/Screenshot5.png)
-### 运行环境
-react-native 0.31.0
+
 
