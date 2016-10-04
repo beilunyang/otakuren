@@ -107,7 +107,7 @@ class Content extends Component {
 					<Text>{finished?'已完結':'連載中'}</Text>
 					<Text>{updated?'最後更新:':''}{updated}</Text>
 				</View>
-				<View style={{flexDirection: 'row', marginTop: 10}}>
+				<View style={{flexDirection: 'row', marginTop: 10, flexWrap: 'wrap', alignItems: 'center'}}>
 					{eps}
 				</View>
 				{!this.state.isLoaded?<View style={styles.center}><Bubbles size={10} color='rgba(248,79,149,.4)' /></View>:null}
@@ -146,9 +146,12 @@ const styles = StyleSheet.create({
 		borderWidth: .5,
 		borderColor: '#CCC',
 		borderRadius: 5,
-		paddingHorizontal: 15,
+		width: 60,
+		marginVertical: 10,
 		paddingVertical: 7,
 		marginHorizontal: 10,
+		flexDirection: 'row',
+		justifyContent: 'center',
 	},
 	center: {
 		flex: 1,

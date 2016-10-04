@@ -50,7 +50,7 @@ class App extends Component {
 				params: { isIOS: this.isIOS },
 			},
 			configureScene(route) {
-				return Navigator.SceneConfigs.VerticalUpSwipeJump;
+				return Navigator.SceneConfigs.HorizontalSwipeJump;
 			},
 			renderScene(route, navigator) {
 				const Comp = route.component;

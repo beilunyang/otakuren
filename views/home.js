@@ -81,7 +81,7 @@ class Home extends Component {
 
 		return (
 			<View style={{flex: 1, backgroundColor: '#FFF'}}>
-				<Text style={[styles.header, this.props.isIOS?{paddingTop:20}:null]}>御宅人</Text>
+				<Text style={[styles.header, this.props.isIOS?{paddingTop:22}:null]}>御宅人</Text>
 				<ScrollView style={{flex: 1}} >
 					<Search nav={this.props.nav} isIOS={this.props.isIOS}/>
 					<View style={styles.scrollView}>
@@ -104,13 +104,12 @@ const styles = StyleSheet.create({
 		color: '#FFF',
 	  	textAlign: 'center',
 	  	padding: 10,
-		borderBottomWidth: 1,
 	},
 	scrollView: {
 	  	flexDirection: 'row',
 	    flexWrap: 'wrap',
 	    alignItems: 'center',
-	    padding: 18,
+	    padding: 20,
 	    justifyContent: 'space-between',
 	},
 	abs: {

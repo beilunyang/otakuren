@@ -5,6 +5,7 @@ import {
 	View,
 	TouchableOpacity,
 	StyleSheet,
+	Dimensions,
 } from 'react-native';
 
 class Category extends Component {
@@ -16,7 +17,7 @@ class Category extends Component {
 		return (
 			<TouchableOpacity onPress={this.props.handlePress} >
 				<View>
-					<Image source={{uri: this.props.cover}} style={styles.img}/>
+					<Image source={{uri: this.props.cover}} style={{borderRadius: 6, width: this.props.imgWH, height: this.props.imgWH}}/>
 					<Text style={styles.cateName}>{this.props.name}</Text>
 				</View>
 			</TouchableOpacity>
@@ -26,16 +27,15 @@ class Category extends Component {
 }
 
 const styles = StyleSheet.create({
-	 img: {
-	    borderRadius: 6,
-	    height: 100,
-	    width: 100,
-	  },
 	  cateName: {
 	    alignSelf: 'center',
 	    justifyContent: 'center',
 	    marginBottom: 15,
   	  },
 });
+
+Category.defaultProps = {
+	imgWH: Dimensions.get('window').width < 360?(Dimensions.get('window').width-60)/3: 100
+};
 
 export default Category;

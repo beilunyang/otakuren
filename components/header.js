@@ -30,7 +30,7 @@ class Header extends Component {
 
 	render() {
 		return (
-			<View style={[styles.header, this.props.isIOS?{paddingTop:13, zIndex:1000}:null]}>
+			<View style={[styles.header, this.props.isIOS?{paddingTop:12, zIndex:1000}:null]}>
 				<TouchableOpacity onPress={this.back.bind(this)}> 
 					<Text style={styles.back} >&lt;返回</Text>
 				</TouchableOpacity>
