@@ -1,5 +1,5 @@
 # otakuren|御宅人
-一款由react-native写成的绅士漫画应用
+一款由react-native写成的绅士漫画应用[Deprecated]
 ***
 ### 主页
 [otaku.ren](http://otaku.ren)
